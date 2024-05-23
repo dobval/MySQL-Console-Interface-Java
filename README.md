@@ -2,18 +2,18 @@
 
 This Java application provides a command-line interface to interact with a MySQL database. You can execute SQL commands, manage data, and perform various database operations seamlessly.
 
-## Features
-
-- **List all tables**: Display all tables present in the connected MySQL database.
-- **Select a table**: View the contents of a specific table.
----
+https://github.com/dobval/MySQL-Console-Interface-Java/assets/100198047/1f3b7312-c521-4642-910c-309c85cba7fe
 
 ## Project Structure
 
 - **DatabaseApp**: The main entry point of the application.
 - **Login**: End-user/Employee login.
-- **DatabaseManager**: Manages the MySQL database connection.
-- **Menu**: Handles user interaction and displays the command-line menu.
+- **DatabaseConnection**: Establishes the MySQL connection and is the base class of:
+  - **DatabaseConnectionRoot**: Root privileges.
+  - **DatabaseConnectionUser**: Guest/end-user privileges.
+- **Menu**: Handles the menu, base class of:
+  - **EmployeeMenu**: Handles the employee interaction and displays the admin menu
+  - **UserMenu**: Handles user interaction and displays the command-line menu.
 - **TableOperations**: Contains methods to perform operations on tables.
 
 ## Getting Started
@@ -28,16 +28,16 @@ This Java application provides a command-line interface to interact with a MySQL
 
 1. **Clone the repository**:
    ```bash
-   git clone https://github.com/yourusername/console-mysql-manager.git
-   cd console-mysql-manager
+   git clone https://github.com/dobval/MySQL-Console-Interface-Java.git
+   cd MySQL-Console-Interface-Java
    ```
 
 2. **Setup MySQL database**:
     - Ensure your MySQL server is running.
-    - Create a database and tables as required.
+    - Download [ArcticAthletes_Simple](arctic_athletes_simple.sql) MySQL Database and run the script
 
 3. **Configure database connection**:
-    - Update the `DatabaseManager` class with your MySQL database URL, username, and password:
+    - Update the `DatabaseConnection*` classes (root and guest) with your MySQL database URL, username, and password:
       ```java
       private static final String URL = "jdbc:mysql://localhost:3306/database_name";
       private static final String USER = "username";
@@ -56,22 +56,34 @@ This Java application provides a command-line interface to interact with a MySQL
 
 ## Usage
 
-Upon running the application, you will be presented with a menu:
+Upon running the application, you will be presented with a Login menu:
 
 ```plaintext
-Enter a menu entry:
-1) List all tables
-2) Select a table
-3) Delete a table
-4) Drop a table
-5) Exit
+Email: 
+example@mail.com
+Password: 
+password
 ```
 
-- **Option 1**: Lists all tables in the database.
-- **Option 2**: Prompts for a table name and displays its contents.
-- **Option 3**: Prompts for a table name and deletes all data from the table.
-- **Option 4**: Prompts for a table name and drops the table from the database.
-- **Option 5**: Exits the application.
+After a successful login, depending on the entered credentials there will be either an employee (root) menu or a customer (guest) menu:
+
+```
+   	1. List Tables
+	2. Select a Table
+	3. Add Data
+	4. Modify Data
+	5. Delete Data
+	6. Logout
+Choose an option:
+```
+```
+Login successful for email: customer@example.com
+	1. View all products
+	2. Browse by category
+	3. View my orders
+	4. Logout
+Choose an option: 
+```
 
 ## Contributing
 
