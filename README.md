@@ -64,7 +64,7 @@ password
 After a successful login, depending on the entered credentials there will be either an employee (root) menu or a customer (guest) menu:
 
 ```
-   1. List Tables
+   	1. List Tables
 	2. Select a Table
 	3. Add Data
 	4. Modify Data
