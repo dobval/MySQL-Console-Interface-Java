@@ -24,8 +24,8 @@ This Java application provides a command-line interface to interact with a MySQL
 
 1. **Clone the repository**:
    ```bash
-   git clone https://github.com/yourusername/console-mysql-manager.git
-   cd console-mysql-manager
+   git clone https://github.com/dobval/MySQL-Console-Interface-Java.git
+   cd MySQL-Console-Interface-Java
    ```
 
 2. **Setup MySQL database**:
