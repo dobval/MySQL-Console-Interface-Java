@@ -2,18 +2,14 @@
 
 This Java application provides a command-line interface to interact with a MySQL database. You can execute SQL commands, manage data, and perform various database operations seamlessly.
 
-## Features
-
-- **List all tables**: Display all tables present in the connected MySQL database.
-- **Select a table**: View the contents of a specific table.
----
-
 ## Project Structure
 
 - **DatabaseApp**: The main entry point of the application.
 - **Login**: End-user/Employee login.
-- **DatabaseManager**: Manages the MySQL database connection.
-- **Menu**: Handles user interaction and displays the command-line menu.
+- **DatabaseConnectionRoot**: Establishes the MySQL database connection with root user privileges.
+- **DatabaseConnectionUser**: Establishes the MySQL database connection with guest/end-user privileges (even without explicit SELECT-only privileges the import java.sql.PreparedStatement removes the risk of SQL injections).
+- **EmployeeMenu**: Handles the employee interaction and displays the admin menu
+- **UserMenu**: Handles user interaction and displays the command-line menu.
 - **TableOperations**: Contains methods to perform operations on tables.
 
 ## Getting Started
@@ -56,22 +52,34 @@ This Java application provides a command-line interface to interact with a MySQL
 
 ## Usage
 
-Upon running the application, you will be presented with a menu:
+Upon running the application, you will be presented with a Login menu:
 
 ```plaintext
-Enter a menu entry:
-1) List all tables
-2) Select a table
-3) Delete a table
-4) Drop a table
-5) Exit
+Email: 
+example@mail.com
+Password: 
+password
 ```
 
-- **Option 1**: Lists all tables in the database.
-- **Option 2**: Prompts for a table name and displays its contents.
-- **Option 3**: Prompts for a table name and deletes all data from the table.
-- **Option 4**: Prompts for a table name and drops the table from the database.
-- **Option 5**: Exits the application.
+After a successful login, depending on the entered credentials there will be either an employee (root) menu or a customer (guest) menu:
+
+```
+   1. List Tables
+	2. Select a Table
+	3. Add Data
+	4. Modify Data
+	5. Delete Data
+	6. Logout
+Choose an option:
+```
+```
+Login successful for email: customer@example.com
+	1. View all products
+	2. Browse by category
+	3. View my orders
+	4. Logout
+Choose an option: 
+```
 
 ## Contributing
 
