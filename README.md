@@ -6,12 +6,12 @@ This Java application provides a command-line interface to interact with a MySQL
 
 - **List all tables**: Display all tables present in the connected MySQL database.
 - **Select a table**: View the contents of a specific table.
-- **Delete a table**: Remove all data from a specific table.
-- **Drop a table**: Completely remove a table from the database.
+---
 
 ## Project Structure
 
 - **DatabaseApp**: The main entry point of the application.
+- **Login**: End-user/Employee login.
 - **DatabaseManager**: Manages the MySQL database connection.
 - **Menu**: Handles user interaction and displays the command-line menu.
 - **TableOperations**: Contains methods to perform operations on tables.

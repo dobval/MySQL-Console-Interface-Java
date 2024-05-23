@@ -1,12 +1,16 @@
-import java.sql.SQLException;
+import java.util.Scanner;
 
 public class DatabaseApp {
     public static void main(String[] args) {
-        Menu menu = new Menu();
-        try {
-            menu.displayMenu();
-        } catch (SQLException e) {
-            e.printStackTrace();
+        while (true) {
+            new Login().displayLoginMenu();
+            System.out.println("Do you want to log in again? (y/n)");
+            Scanner scanner = new Scanner(System.in);
+            String choice = scanner.nextLine();
+            if (!choice.equalsIgnoreCase("y")) {
+                break;
+            }
         }
+        System.out.println("Goodbye!");
     }
 }
