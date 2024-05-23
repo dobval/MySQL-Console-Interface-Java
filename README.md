@@ -30,10 +30,10 @@ This Java application provides a command-line interface to interact with a MySQL
 
 2. **Setup MySQL database**:
     - Ensure your MySQL server is running.
-    - Create a database and tables as required.
+    - Download [ArcticAthletes_Simple](arcticathletes_simple) MySQL Database and run the script
 
 3. **Configure database connection**:
-    - Update the `DatabaseManager` class with your MySQL database URL, username, and password:
+    - Update the `DatabaseConnection*` classes (root and guest) with your MySQL database URL, username, and password:
       ```java
       private static final String URL = "jdbc:mysql://localhost:3306/database_name";
       private static final String USER = "username";
