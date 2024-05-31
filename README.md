@@ -8,10 +8,12 @@ https://github.com/dobval/MySQL-Console-Interface-Java/assets/100198047/1f3b7312
 
 - **DatabaseApp**: The main entry point of the application.
 - **Login**: End-user/Employee login.
-- **DatabaseConnectionRoot**: Establishes the MySQL database connection with root user privileges.
-- **DatabaseConnectionUser**: Establishes the MySQL database connection with guest/end-user privileges (even without explicit SELECT-only privileges the import java.sql.PreparedStatement removes the risk of SQL injections).
-- **EmployeeMenu**: Handles the employee interaction and displays the admin menu
-- **UserMenu**: Handles user interaction and displays the command-line menu.
+- **DatabaseConnection**: Establishes the MySQL connection and is the base class of:
+  - **DatabaseConnectionRoot**: Root privileges.
+  - **DatabaseConnectionUser**: Guest/end-user privileges.
+- **Menu**: Handles the menu, base class of:
+  - **EmployeeMenu**: Handles the employee interaction and displays the admin menu
+  - **UserMenu**: Handles user interaction and displays the command-line menu.
 - **TableOperations**: Contains methods to perform operations on tables.
 
 ## Getting Started

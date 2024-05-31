@@ -15,7 +15,8 @@ public class Login {
 
         if(email.equals("root") && password.equals("adminpassword")){
             try {
-                Connection conn = DatabaseConnectionRoot.getConnection();
+                DatabaseConnectionRoot DBConnRoot = new DatabaseConnectionRoot();
+                Connection conn = DBConnRoot.getConnection();
                 new EmployeeMenu().displayMenu(conn);
             } catch (SQLException e) {
                 System.out.println(e.getMessage());
@@ -24,7 +25,8 @@ public class Login {
 
         else if (checkCredentials(email, password)) {
             try {
-                Connection conn = DatabaseConnectionUser.getConnection();
+                DatabaseConnectionUser DBConnUser = new DatabaseConnectionUser();
+                Connection conn = DBConnUser.getConnection();
                 new UserMenu(email).displayMenu(conn);
             } catch (SQLException e) {
                 System.out.println(e.getMessage());
@@ -38,7 +40,9 @@ public class Login {
 
         String query = "SELECT password FROM customers WHERE email = ?";
 
-        try (Connection conn = DatabaseConnectionRoot.getConnection();
+        DatabaseConnectionRoot DBConnRoot = new DatabaseConnectionRoot();
+
+        try (Connection conn = DBConnRoot.getConnection();
              PreparedStatement pstmt = conn.prepareStatement(query)) {
 
             pstmt.setString(1, email);
