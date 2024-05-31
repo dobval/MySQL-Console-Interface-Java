@@ -2,7 +2,20 @@
 
 This Java application provides a command-line interface to interact with a MySQL database. You can execute SQL commands, manage data, and perform various database operations seamlessly.
 
-https://github.com/dobval/MySQL-Console-Interface-Java/assets/100198047/1f3b7312-c521-4642-910c-309c85cba7fe
+<details>
+  <summary>Customer Login Showcase</summary>
+	
+  https://github.com/dobval/MySQL-Console-Interface-Java/assets/100198047/5b3d9b02-3b60-4368-a516-d15039ee7d4e
+
+</details>
+<details>
+  <summary>Employee Login Showcase</summary>
+	
+  https://github.com/dobval/MySQL-Console-Interface-Java/assets/100198047/151f9b7b-b7b8-4aa1-b3c4-182ed79db5b0
+
+</details>
+
+
 
 ## Project Structure
 
