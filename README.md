@@ -1,6 +1,6 @@
 # MySQL Console Interface (Java)
 
-This Java application provides a command-line interface to interact with a MySQL database. You can execute SQL commands, manage data, and perform various database operations seamlessly.
+This Java application provides a command-line interface to interact with a MySQL database using the MVC pattern. You can execute SQL commands, manage data, and perform various database operations seamlessly.
 
 https://github.com/dobval/MySQL-Console-Interface-Java/assets/100198047/1f3b7312-c521-4642-910c-309c85cba7fe
 
@@ -14,7 +14,10 @@ https://github.com/dobval/MySQL-Console-Interface-Java/assets/100198047/1f3b7312
 - **Menu**: Handles the menu, base class of:
   - **EmployeeMenu**: Handles the employee interaction and displays the admin menu
   - **UserMenu**: Handles user interaction and displays the command-line menu.
-- **TableOperations**: Contains methods to perform operations on tables.
+- **ConsoleView**: (View) Handles the visualisation.
+- **TableOperationsController**: (Controller) Handles the interaction between the View and Model
+- **DatabaseOperations**: (Model) Handles the database operations.
+- **TableOperations**: TO BE REMOVED
 
 ## Getting Started
 
