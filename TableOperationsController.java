@@ -1,3 +1,5 @@
+import com.DatabaseModel.*;
+
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.List;
@@ -7,6 +9,7 @@ public class TableOperationsController {
 
     private final DatabaseOperations model;
     private final ConsoleView view;
+    //private final Connection conn;
 
     public TableOperationsController(DatabaseOperations model, ConsoleView view) {
         this.model = model;
@@ -37,7 +40,7 @@ public class TableOperationsController {
             List<String> categories = model.getDistinctCategories(conn);
             view.displayCategories(categories);
             String category = view.promptForCategory();
-            List<List<String>> products = model.selectProductsByCategory(conn, category);
+            List<Product> products = model.selectProductsByCategory(conn, category);
             view.displayProducts(products);
         } catch (SQLException e) {
             System.out.println(e.getMessage());
@@ -46,7 +49,7 @@ public class TableOperationsController {
 
     public void selectProducts(Connection conn) {
         try {
-            List<List<String>> products = model.selectProducts(conn);
+            List<Product> products = model.selectProducts(conn);
             view.displayProducts(products);
         } catch (SQLException e) {
             System.out.println(e.getMessage());
@@ -60,18 +63,33 @@ public class TableOperationsController {
                 System.out.println("No customer found with the provided email.");
                 return;
             }
-            List<List<String>> orders = model.getCustomerOrders(conn, customerId);
-            view.displayOrders(orders);
-            for (List<String> order : orders) {
-                int orderId = Integer.parseInt(order.getFirst());
-                List<List<String>> items = model.getOrderItems(conn, orderId);
-                view.displayOrderItems(items);
+            List<Order> orders = model.getCustomerOrders(conn, customerId);
+            if (orders.isEmpty()) {
+                System.out.println("No orders found for the provided customer.");
+                return;
             }
+            //TODO simplify method by calling view.displayOrders and view.displayOrderItems
+            System.out.println("===Personal Orders===");
+            for (Order order : orders) {
+                int orderId = order.getId();
+                System.out.printf("Order ID: %d, Created: %s, Finished: %s, Status: %s\n",
+                        orderId, order.getCreatedDate(), order.getFinishedDate(), order.getStatus());
+
+                List<OrderItem> items = model.getOrderItems(conn, orderId);
+                System.out.println(" ==Products in order==");
+                for (OrderItem item : items) {
+                    String productName = model.getProductNameById(conn, item.getProductId());
+                    view.alignProductResults(item.getProductId(), productName, item.getPrice(), item.getQuantity());
+                }
+            }
+            System.out.println("===END===");
+            //
         } catch (SQLException e) {
             System.out.println(e.getMessage());
         }
     }
- //TODO: HANDLE AUTO-INCREMENT IDs FOR adding data
+
+ //TODO: handle AUTO-INCREMENT IDs for adding data
     public void addData(Connection conn) {
         listTables(conn);
         String tableName = view.promptForTableName();

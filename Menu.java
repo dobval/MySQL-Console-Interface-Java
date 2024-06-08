@@ -1,3 +1,5 @@
+import com.DatabaseModel.DatabaseOperations;
+
 import java.sql.Connection;
 import java.util.Scanner;
 
@@ -20,7 +22,7 @@ public abstract class Menu {
     DatabaseOperations model = new DatabaseOperations();
     TableOperationsController controller = new TableOperationsController(model, view);
 }
-
+// CONNECTION TO CLASS RATHER THAN INDIVIDUAL METHOD TODO
 class EmployeeMenu extends Menu {
 
     @Override

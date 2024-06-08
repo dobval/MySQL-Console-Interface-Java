@@ -1,3 +1,5 @@
+package com.DatabaseModel;
+
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -18,20 +20,24 @@ public class DatabaseOperations {
     }
 
     public List<List<String>> selectTable(Connection conn, String tableName) throws SQLException {
-        List<List<String>> result = new ArrayList<>();
+        List<List<String>> content = new ArrayList<>();
         String query = "SELECT * FROM " + tableName;
+
         try (Statement stmt = conn.createStatement();
              ResultSet rs = stmt.executeQuery(query)) {
+
             int columnCount = rs.getMetaData().getColumnCount();
+
             while (rs.next()) {
                 List<String> row = new ArrayList<>();
                 for (int i = 1; i <= columnCount; i++) {
                     row.add(rs.getString(i));
                 }
-                result.add(row);
+                content.add(row);
             }
         }
-        return result;
+
+        return content;
     }
 
     public List<String> selectRowById(Connection conn, String tableName, String rowId) throws SQLException {
@@ -63,35 +69,57 @@ public class DatabaseOperations {
         return categories;
     }
 
-    public List<List<String>> selectProducts(Connection conn) throws SQLException {
-        List<List<String>> products = new ArrayList<>();
-        String query = "SELECT * FROM products";
-        try (PreparedStatement pstmt = conn.prepareStatement(query);
-             ResultSet rs = pstmt.executeQuery()) {
+    /*
+    public List<Customer> selectCustomers(Connection conn) throws SQLException {
+        List<Customer> customers = new ArrayList<>();
+        String query = "SELECT * FROM customers";
+        try (Statement stmt = conn.createStatement();
+             ResultSet rs = stmt.executeQuery(query)) {
             while (rs.next()) {
-                List<String> product = new ArrayList<>();
-                product.add(String.valueOf(rs.getInt("id")));
-                product.add(rs.getString("name"));
-                product.add(String.valueOf(rs.getDouble("price")));
-                product.add(String.valueOf(rs.getInt("quantity")));
+                Customer customer = new Customer();
+                customer.setId(rs.getInt("id"));
+                customer.setFirstName(rs.getString("first_name"));
+                customer.setLastName(rs.getString("last_name"));
+                customer.setPhone(rs.getString("phone"));
+                customer.setEmail(rs.getString("email"));
+                customers.add(customer);
+            }
+        }
+        return customers;
+    }
+    */
+
+    public List<Product> selectProducts(Connection conn) throws SQLException {
+        List<Product> products = new ArrayList<>();
+        String query = "SELECT * FROM products";
+        try (Statement stmt = conn.createStatement();
+             ResultSet rs = stmt.executeQuery(query)) {
+            while (rs.next()) {
+                Product product = new Product();
+                product.setId(rs.getInt("id"));
+                product.setName(rs.getString("name"));
+                product.setPrice(rs.getBigDecimal("price"));
+                product.setQuantity(rs.getInt("quantity"));
+                product.setCategory(rs.getString("category"));
                 products.add(product);
             }
         }
         return products;
     }
 
-    public List<List<String>> selectProductsByCategory(Connection conn, String category) throws SQLException {
-        List<List<String>> products = new ArrayList<>();
+    public List<Product> selectProductsByCategory(Connection conn, String category) throws SQLException {
+        List<Product> products = new ArrayList<>();
         String query = "SELECT * FROM products WHERE category = ?";
         try (PreparedStatement pstmt = conn.prepareStatement(query)) {
             pstmt.setString(1, category);
             try (ResultSet rs = pstmt.executeQuery()) {
                 while (rs.next()) {
-                    List<String> product = new ArrayList<>();
-                    product.add(String.valueOf(rs.getInt("id")));
-                    product.add(rs.getString("name"));
-                    product.add(String.valueOf(rs.getDouble("price")));
-                    product.add(String.valueOf(rs.getInt("quantity")));
+                    Product product = new Product();
+                    product.setId(rs.getInt("id"));
+                    product.setName(rs.getString("name"));
+                    product.setPrice(rs.getBigDecimal("price"));
+                    product.setQuantity(rs.getInt("quantity"));
+                    product.setCategory(rs.getString("category"));
                     products.add(product);
                 }
             }
@@ -113,18 +141,19 @@ public class DatabaseOperations {
         }
     }
 
-    public List<List<String>> getCustomerOrders(Connection conn, int customerId) throws SQLException {
-        List<List<String>> orders = new ArrayList<>();
+    public List<Order> getCustomerOrders(Connection conn, int customerId) throws SQLException {
+        List<Order> orders = new ArrayList<>();
         String query = "SELECT * FROM orders WHERE customer_id = ?";
         try (PreparedStatement pstmt = conn.prepareStatement(query)) {
             pstmt.setInt(1, customerId);
             try (ResultSet rs = pstmt.executeQuery()) {
                 while (rs.next()) {
-                    List<String> order = new ArrayList<>();
-                    order.add(String.valueOf(rs.getInt("id")));
-                    order.add(rs.getString("created_date"));
-                    order.add(rs.getString("finished_date"));
-                    order.add(rs.getString("status"));
+                    Order order = new Order();
+                    order.setId(rs.getInt("id"));
+                    order.setCustomerId(rs.getInt("customer_id"));
+                    order.setCreatedDate(rs.getDate("created_date"));
+                    order.setFinishedDate(rs.getDate("finished_date"));
+                    order.setStatus(rs.getString("status"));
                     orders.add(order);
                 }
             }
@@ -132,21 +161,22 @@ public class DatabaseOperations {
         return orders;
     }
 
-    public List<List<String>> getOrderItems(Connection conn, int orderId) throws SQLException {
-        List<List<String>> orderItems = new ArrayList<>();
+    public List<OrderItem> getOrderItems(Connection conn, int orderId) throws SQLException {
+        List<OrderItem> orderItems = new ArrayList<>();
         String query = "SELECT oi.product_id, p.name, p.price, oi.quantity " +
                 "FROM order_items oi " +
                 "JOIN products p ON oi.product_id = p.id " +
                 "WHERE oi.order_id = ?";
-        try (PreparedStatement pstmt = conn.prepareStatement(query)) {
-            pstmt.setInt(1, orderId);
-            try (ResultSet rs = pstmt.executeQuery()) {
+        try (PreparedStatement stmt = conn.prepareStatement(query)) {
+            stmt.setInt(1, orderId);
+            try (ResultSet rs = stmt.executeQuery()) {
                 while (rs.next()) {
-                    List<String> item = new ArrayList<>();
-                    item.add(String.valueOf(rs.getInt("product_id")));
-                    item.add(rs.getString("name"));
-                    item.add(String.valueOf(rs.getDouble("price")));
-                    item.add(String.valueOf(rs.getInt("quantity")));
+                    OrderItem item = new OrderItem();
+                    item.setOrderId(orderId);
+                    item.setProductId(rs.getInt("product_id"));
+                    item.setProductName(rs.getString("name"));
+                    item.setPrice(rs.getBigDecimal("price"));
+                    item.setQuantity(rs.getInt("quantity"));
                     orderItems.add(item);
                 }
             }
@@ -154,31 +184,39 @@ public class DatabaseOperations {
         return orderItems;
     }
 
-    public void insertData(Connection conn, String tableName, List<String> columns, List<Object> values) throws SQLException {
-        /*List<String> filteredColumns = new ArrayList<>();
-        List<Object> filteredValues = new ArrayList<>();
-
-        for (int i = 0; i < columns.size(); i++) {
-            if (!isAutoIncrement(conn, tableName, columns.get(i))) {
-                filteredColumns.add(columns.get(i));
-                filteredValues.add(values.get(i));
+    public String getProductNameById(Connection conn, int productId) throws SQLException {
+        String query = "SELECT name FROM products WHERE id = ?";
+        try (PreparedStatement stmt = conn.prepareStatement(query)) {
+            stmt.setInt(1, productId);
+            try (ResultSet rs = stmt.executeQuery()) {
+                if (rs.next()) {
+                    return rs.getString("name");
+                } else {
+                    return "Unknown Product";
+                }
             }
-        }*/
-
-        StringBuilder insertColumns = new StringBuilder();
-        StringBuilder insertValues = new StringBuilder();
-
-        for (int i = 0; i < columns.size(); i++) {
-            if (i > 0) {
-                insertColumns.append(", ");
-                insertValues.append(", ");
-            }
-            insertColumns.append(columns.get(i));
-            insertValues.append("?");
         }
+    }
 
-        String insertSql = "INSERT INTO " + tableName + " (" + insertColumns + ") VALUES (" + insertValues + ")";
-        try (PreparedStatement pstmt = conn.prepareStatement(insertSql)) {
+    public void insertData(Connection conn, String tableName, List<String> columns, List<Object> values) throws SQLException {
+        StringBuilder query = new StringBuilder("INSERT INTO ");
+        query.append(tableName).append(" (");
+        for (int i = 0; i < columns.size(); i++) {
+            query.append(columns.get(i));
+            if (i < columns.size() - 1) {
+                query.append(", ");
+            }
+        }
+        query.append(") VALUES (");
+        for (int i = 0; i < values.size(); i++) {
+            query.append("?");
+            if (i < values.size() - 1) {
+                query.append(", ");
+            }
+        }
+        query.append(")");
+
+        try (PreparedStatement pstmt = conn.prepareStatement(query.toString())) {
             for (int i = 0; i < values.size(); i++) {
                 pstmt.setObject(i + 1, values.get(i));
             }
@@ -187,28 +225,29 @@ public class DatabaseOperations {
     }
 
     public void deleteData(Connection conn, String tableName, String rowId) throws SQLException {
-        String deleteSql = "DELETE FROM " + tableName + " WHERE id = ?";
-        try (PreparedStatement pstmt = conn.prepareStatement(deleteSql)) {
+        String query = "DELETE FROM " + tableName + " WHERE id = ?";
+        try (PreparedStatement pstmt = conn.prepareStatement(query)) {
             pstmt.setString(1, rowId);
             pstmt.executeUpdate();
         }
     }
 
     public void updateData(Connection conn, String tableName, String rowId, List<String> columns, List<Object> values) throws SQLException {
-        StringBuilder updateSql = new StringBuilder("UPDATE " + tableName + " SET ");
+        StringBuilder query = new StringBuilder("UPDATE ");
+        query.append(tableName).append(" SET ");
         for (int i = 0; i < columns.size(); i++) {
-            if (i > 0) {
-                updateSql.append(", ");
+            query.append(columns.get(i)).append(" = ?");
+            if (i < columns.size() - 1) {
+                query.append(", ");
             }
-            updateSql.append(columns.get(i)).append(" = ?");
         }
-        updateSql.append(" WHERE id = ?");
+        query.append(" WHERE id = ?");
 
-        try (PreparedStatement pstmt = conn.prepareStatement(updateSql.toString())) {
+        try (PreparedStatement pstmt = conn.prepareStatement(query.toString())) {
             for (int i = 0; i < values.size(); i++) {
                 pstmt.setObject(i + 1, values.get(i));
             }
-            pstmt.setObject(values.size() + 1, rowId);
+            pstmt.setString(values.size() + 1, rowId);
             pstmt.executeUpdate();
         }
     }
@@ -247,19 +286,5 @@ public class DatabaseOperations {
             }
         }
         return columnNames;
-    }
-
-    //check TODO
-    private boolean isAutoIncrement(Connection conn, String tableName, String columnName) {
-        try {
-            DatabaseMetaData metaData = conn.getMetaData();
-            ResultSet columns = metaData.getColumns(null, null, tableName, columnName);
-            if (columns.next()) {
-                return "YES".equalsIgnoreCase(columns.getString("IS_AUTOINCREMENT"));
-            }
-        } catch (SQLException e) {
-            System.out.println("Error checking if column is auto-increment: " + e.getMessage());
-        }
-        return false;
     }
 }

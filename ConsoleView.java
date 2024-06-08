@@ -1,6 +1,9 @@
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
+
+import com.DatabaseModel.*;
 
 // View (MVC)
 public class ConsoleView {
@@ -38,7 +41,7 @@ public class ConsoleView {
         for (String category : categories) {
             System.out.println(category);
         }
-        System.out.println("===END===");
+        System.out.print("===END===");
     }
 
     public String promptForCategory() {
@@ -46,19 +49,19 @@ public class ConsoleView {
         return scanner.nextLine();
     }
 
-    public void displayProducts(List<List<String>> products) {
-        System.out.println("\n===Products===");
-        for (List<String> product : products) {
-            int id = Integer.parseInt(product.get(0));
-            String name = product.get(1);
-            double price = Double.parseDouble(product.get(2));
-            int qty = Integer.parseInt(product.get(3));
+    public void displayProducts(List<Product> products) {
+        System.out.println("\n=== Products ===");
+        for (Product product : products) {
+            int id = product.getId();
+            String name = product.getName();
+            BigDecimal price = product.getPrice();
+            int qty = product.getQuantity();
             alignProductResults(id, name, price, qty);
         }
-        System.out.println("===END===");
+        System.out.println("=== END ===");
     }
 
-    public void alignProductResults(int id, String name, double price, int qty){
+    public void alignProductResults(int id, String name, BigDecimal price, int qty){
         // Breaks the name string on the last whitespace for better readability
         int lineBreakIndex = 30;
         if (name.length() > lineBreakIndex) {
@@ -73,21 +76,21 @@ public class ConsoleView {
                     name, price, qty, id);
         }
     }
-    public void displayOrders(List<List<String>> orders) {
-        System.out.println("===Personal Orders===");
-        for (List<String> order : orders) {
-            System.out.printf("Order ID: %s, Created: %s, Finished: %s, Status: %s\n",
-                    order.get(0), order.get(1), order.get(2), order.get(3));
+
+    public void displayOrders(List<Order> orders) {
+        System.out.println("\n=== Orders ===");
+        for (Order order : orders) {
+            System.out.println(order);
         }
+        //System.out.println("=== END ===");
     }
 
-    public void displayOrderItems(List<List<String>> items) {
-        System.out.println(" ==Products in order==");
-        for (List<String> item : items) {
-            System.out.printf("%-30s | Price: %10.2f BGN | Qty: %5d | Ref.No: %5d\n",
-                    item.get(1), Double.parseDouble(item.get(2)), Integer.parseInt(item.get(3)), Integer.parseInt(item.get(0)));
+    public void displayOrderItems(List<OrderItem> orderItems) {
+        System.out.println("\n== Order Items ==");
+        for (OrderItem item : orderItems) {
+            System.out.println(item);
         }
-        System.out.println("===END===");
+        System.out.println("=== END ===");
     }
 
     public String promptForRowId() {

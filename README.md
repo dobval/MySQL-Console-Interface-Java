@@ -16,8 +16,7 @@ https://github.com/dobval/MySQL-Console-Interface-Java/assets/100198047/1f3b7312
   - **UserMenu**: Handles user interaction and displays the command-line menu.
 - **ConsoleView**: (View) Handles the visualisation.
 - **TableOperationsController**: (Controller) Handles the interaction between the View and Model
-- **DatabaseOperations**: (Model) Handles the database operations.
-- **TableOperations**: TO BE REMOVED
+- **com.DatabaseModel.DatabaseOperations**: (Model) Handles the database operations.
 
 ## Getting Started
 
