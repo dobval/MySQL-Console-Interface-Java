@@ -80,15 +80,23 @@ public class ConsoleView {
     public void displayOrders(List<Order> orders) {
         System.out.println("\n=== Orders ===");
         for (Order order : orders) {
-            System.out.println(order);
+            printCustomerFormatOrder(order);
         }
-        //System.out.println("=== END ===");
+    }
+
+    public void printCustomerFormatOrder(Order order) {
+        System.out.printf("Order ID: %d, Created: %s, Finished: %s, Status: %s%n",
+                order.getId(), order.getCreatedDate(), order.getFinishedDate(), order.getStatus());
     }
 
     public void displayOrderItems(List<OrderItem> orderItems) {
         System.out.println("\n== Order Items ==");
         for (OrderItem item : orderItems) {
-            System.out.println(item);
+            int id = item.getId();
+            String name = item.getProductName();
+            BigDecimal price = item.getPrice();
+            int qty = item.getQuantity();
+            alignProductResults(id, name, price, qty);
         }
         System.out.println("=== END ===");
     }

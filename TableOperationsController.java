@@ -68,22 +68,12 @@ public class TableOperationsController {
                 System.out.println("No orders found for the provided customer.");
                 return;
             }
-            //TODO simplify method by calling view.displayOrders and view.displayOrderItems
-            System.out.println("===Personal Orders===");
+            view.displayOrders(orders);
             for (Order order : orders) {
                 int orderId = order.getId();
-                System.out.printf("Order ID: %d, Created: %s, Finished: %s, Status: %s\n",
-                        orderId, order.getCreatedDate(), order.getFinishedDate(), order.getStatus());
-
                 List<OrderItem> items = model.getOrderItems(conn, orderId);
-                System.out.println(" ==Products in order==");
-                for (OrderItem item : items) {
-                    String productName = model.getProductNameById(conn, item.getProductId());
-                    view.alignProductResults(item.getProductId(), productName, item.getPrice(), item.getQuantity());
-                }
+                view.displayOrderItems(items);
             }
-            System.out.println("===END===");
-            //
         } catch (SQLException e) {
             System.out.println(e.getMessage());
         }
