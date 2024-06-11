@@ -53,7 +53,7 @@ public class Login {
                 return false;
             }
 
-        } catch (SQLException e) {
+        } catch (SQLException | NullPointerException e) {
             System.out.println(e.getMessage());
         }
         return false;
