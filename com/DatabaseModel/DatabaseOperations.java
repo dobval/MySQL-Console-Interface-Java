@@ -7,7 +7,7 @@ import java.util.List;
 // Model (MVC)
 public class DatabaseOperations {
 
-    public List<String> listTables(Connection conn) throws SQLException {
+    public List<String> listTables(Connection conn) {
         List<String> tables = new ArrayList<>();
         String query = "SHOW TABLES";
         try (Statement stmt = conn.createStatement();
@@ -16,10 +16,13 @@ public class DatabaseOperations {
                 tables.add(rs.getString(1));
             }
         }
+        catch (SQLException e) {
+            System.out.println(e.getMessage());
+        }
         return tables;
     }
 
-    public List<List<String>> selectTable(Connection conn, String tableName) throws SQLException {
+    public List<List<String>> selectTable(Connection conn, String tableName) {
         List<List<String>> content = new ArrayList<>();
         String query = "SELECT * FROM " + tableName;
 
@@ -36,11 +39,14 @@ public class DatabaseOperations {
                 content.add(row);
             }
         }
+        catch (SQLException e) {
+            System.out.println(e.getMessage());
+        }
 
         return content;
     }
 
-    public List<String> selectRowById(Connection conn, String tableName, String rowId) throws SQLException {
+    public List<String> selectRowById(Connection conn, String tableName, String rowId) {
         List<String> row = new ArrayList<>();
         String query = "SELECT * FROM " + tableName + " WHERE id = ?";
         try (PreparedStatement pstmt = conn.prepareStatement(query)) {
@@ -54,10 +60,13 @@ public class DatabaseOperations {
                 }
             }
         }
+        catch (SQLException e) {
+            System.out.println(e.getMessage());
+        }
         return row;
     }
 
-    public List<String> getDistinctCategories(Connection conn) throws SQLException {
+    public List<String> getDistinctCategories(Connection conn) {
         List<String> categories = new ArrayList<>();
         String query = "SELECT DISTINCT category FROM products";
         try (PreparedStatement pstmt = conn.prepareStatement(query);
@@ -66,11 +75,14 @@ public class DatabaseOperations {
                 categories.add(rs.getString("category"));
             }
         }
+        catch (SQLException e) {
+            System.out.println(e.getMessage());
+        }
         return categories;
     }
 
     /*
-    public List<Customer> selectCustomers(Connection conn) throws SQLException {
+    public List<Customer> selectCustomers(Connection conn) {
         List<Customer> customers = new ArrayList<>();
         String query = "SELECT * FROM customers";
         try (Statement stmt = conn.createStatement();
@@ -85,11 +97,14 @@ public class DatabaseOperations {
                 customers.add(customer);
             }
         }
+        catch (SQLException e) {
+            System.out.println(e.getMessage());
+        }
         return customers;
     }
     */
 
-    public List<Product> selectProducts(Connection conn) throws SQLException {
+    public List<Product> selectProducts(Connection conn){
         List<Product> products = new ArrayList<>();
         String query = "SELECT * FROM products";
         try (Statement stmt = conn.createStatement();
@@ -104,10 +119,13 @@ public class DatabaseOperations {
                 products.add(product);
             }
         }
+        catch (SQLException e) {
+            System.out.println(e.getMessage());
+        }
         return products;
     }
 
-    public List<Product> selectProductsByCategory(Connection conn, String category) throws SQLException {
+    public List<Product> selectProductsByCategory(Connection conn, String category) {
         List<Product> products = new ArrayList<>();
         String query = "SELECT * FROM products WHERE category = ?";
         try (PreparedStatement pstmt = conn.prepareStatement(query)) {
@@ -124,24 +142,29 @@ public class DatabaseOperations {
                 }
             }
         }
+        catch (SQLException e) {
+            System.out.println(e.getMessage());
+        }
         return products;
     }
 
-    public int getCustomerIdByEmail(Connection conn, String email) throws SQLException {
+    public int getCustomerIdByEmail(Connection conn, String email) {
         String query = "SELECT id FROM customers WHERE email = ?";
         try (PreparedStatement pstmt = conn.prepareStatement(query)) {
             pstmt.setString(1, email);
             try (ResultSet rs = pstmt.executeQuery()) {
                 if (rs.next()) {
                     return rs.getInt("id");
-                } else {
-                    return -1; // No customer found
-                }
+                    }
             }
         }
+        catch (SQLException e) {
+            System.out.println(e.getMessage());
+        }
+        return -1; // No customer found
     }
 
-    public List<Order> getCustomerOrders(Connection conn, int customerId) throws SQLException {
+    public List<Order> getCustomerOrders(Connection conn, int customerId) {
         List<Order> orders = new ArrayList<>();
         String query = "SELECT * FROM orders WHERE customer_id = ?";
         try (PreparedStatement pstmt = conn.prepareStatement(query)) {
@@ -158,10 +181,13 @@ public class DatabaseOperations {
                 }
             }
         }
+        catch (SQLException e) {
+            System.out.println(e.getMessage());
+        }
         return orders;
     }
 
-    public List<OrderItem> getOrderItems(Connection conn, int orderId) throws SQLException {
+    public List<OrderItem> getOrderItems(Connection conn, int orderId) {
         List<OrderItem> orderItems = new ArrayList<>();
         String query = "SELECT oi.product_id, p.name, p.price, oi.quantity " +
                 "FROM order_items oi " +
@@ -181,24 +207,13 @@ public class DatabaseOperations {
                 }
             }
         }
+        catch (SQLException e) {
+            System.out.println(e.getMessage());
+        }
         return orderItems;
     }
 
-    public String getProductNameById(Connection conn, int productId) throws SQLException {
-        String query = "SELECT name FROM products WHERE id = ?";
-        try (PreparedStatement stmt = conn.prepareStatement(query)) {
-            stmt.setInt(1, productId);
-            try (ResultSet rs = stmt.executeQuery()) {
-                if (rs.next()) {
-                    return rs.getString("name");
-                } else {
-                    return "Unknown Product";
-                }
-            }
-        }
-    }
-
-    public void insertData(Connection conn, String tableName, List<String> columns, List<Object> values) throws SQLException {
+    public void insertData(Connection conn, String tableName, List<String> columns, List<Object> values) {
         StringBuilder query = new StringBuilder("INSERT INTO ");
         query.append(tableName).append(" (");
         for (int i = 0; i < columns.size(); i++) {
@@ -222,17 +237,23 @@ public class DatabaseOperations {
             }
             pstmt.executeUpdate();
         }
+        catch (SQLException e) {
+            System.out.println(e.getMessage());
+        }
     }
 
-    public void deleteData(Connection conn, String tableName, String rowId) throws SQLException {
+    public void deleteData(Connection conn, String tableName, String rowId) {
         String query = "DELETE FROM " + tableName + " WHERE id = ?";
         try (PreparedStatement pstmt = conn.prepareStatement(query)) {
             pstmt.setString(1, rowId);
             pstmt.executeUpdate();
         }
+        catch (SQLException e) {
+            System.out.println(e.getMessage());
+        }
     }
 
-    public void updateData(Connection conn, String tableName, String rowId, List<String> columns, List<Object> values) throws SQLException {
+    public void updateData(Connection conn, String tableName, String rowId, List<String> columns, List<Object> values) {
         StringBuilder query = new StringBuilder("UPDATE ");
         query.append(tableName).append(" SET ");
         for (int i = 0; i < columns.size(); i++) {
@@ -250,41 +271,28 @@ public class DatabaseOperations {
             pstmt.setString(values.size() + 1, rowId);
             pstmt.executeUpdate();
         }
+        catch (SQLException e) {
+            System.out.println(e.getMessage());
+        }
     }
 
     public List<String> getColumns(Connection conn, String tableName, String schemaName) {
-
-        ResultSet rs = null;
-
-        ResultSetMetaData rsmd;
-        PreparedStatement ps = null;
-        List<String> columnNames = null;
+        List<String> columnNames = new ArrayList<>();
         String qualifiedName = (schemaName != null && !schemaName.isEmpty()) ? (schemaName + "." + tableName) : tableName;
-        try {
-            ps = conn.prepareStatement("select * from " + qualifiedName + " where 0=1");
-            rs = ps.executeQuery();// Empty ResultSet, but we'll still get the metadata
-            rsmd = rs.getMetaData();
-            columnNames = new ArrayList<>();
-            for (int i = 1; i <= rsmd.getColumnCount(); i++)
+
+        String query = "SELECT * FROM " + qualifiedName + " WHERE 0=1";
+
+        try (PreparedStatement ps = conn.prepareStatement(query);
+             ResultSet rs = ps.executeQuery()) {
+
+            ResultSetMetaData rsmd = rs.getMetaData();
+            for (int i = 1; i <= rsmd.getColumnCount(); i++) {
                 columnNames.add(rsmd.getColumnLabel(i));
+            }
         } catch (SQLException e) {
             System.out.println(e.getMessage());
-        } finally {
-            if (rs != null) {
-                try {
-                    rs.close();
-                } catch (SQLException e) {
-                    System.out.println(e.getMessage());
-                }
-            }
-            if (ps != null) {
-                try {
-                    ps.close();
-                } catch (SQLException e) {
-                    System.out.println(e.getMessage());
-                }
-            }
         }
+
         return columnNames;
     }
 }

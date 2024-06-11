@@ -22,7 +22,7 @@ public abstract class Menu {
     DatabaseOperations model = new DatabaseOperations();
     TableOperationsController controller = new TableOperationsController(model, view);
 }
-// CONNECTION TO CLASS RATHER THAN INDIVIDUAL METHOD TODO
+// TODO: "connection" to class rather than individual method
 class EmployeeMenu extends Menu {
 
     @Override
