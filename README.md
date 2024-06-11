@@ -30,6 +30,7 @@ This Java application provides a command-line interface to interact with a MySQL
 - **ConsoleView**: (View) Handles the visualisation.
 - **TableOperationsController**: (Controller) Handles the interaction between the View and Model
 - **com.DatabaseModel.DatabaseOperations**: (Model) Handles the database operations.
+	- Database Structure classes inside com.DatabaseModel
 
 ## Getting Started
 
@@ -52,11 +53,13 @@ This Java application provides a command-line interface to interact with a MySQL
     - Download [ArcticAthletes_Simple](arctic_athletes_simple.sql) MySQL Database and run the script
 
 3. **Configure database connection**:
-    - Update the `DatabaseConnection*` classes (root and guest) with your MySQL database URL, username, and password:
-      ```java
-      private static final String URL = "jdbc:mysql://localhost:3306/database_name";
-      private static final String USER = "username";
-      private static final String PASSWORD = "password";
+    - Update the [dbconfig.properties](dbconfig.properties) file:
+      ```
+      db.url=jdbc:mysql://localhost:3306/arctic_athletes_simple
+      db.root.user=root
+      db.root.password=adminpassword
+      db.user.user=guest
+      db.user.password=password
       ```
 
 4. **Compile the application**:
