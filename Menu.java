@@ -1,3 +1,5 @@
+import com.DatabaseModel.DatabaseOperations;
+
 import java.sql.Connection;
 import java.util.Scanner;
 
@@ -16,8 +18,11 @@ public abstract class Menu {
 
     protected abstract void displayOptions();
     protected abstract boolean handleChoice(Connection connection, int choice);
+    ConsoleView view = new ConsoleView();
+    DatabaseOperations model = new DatabaseOperations();
+    TableOperationsController controller = new TableOperationsController(model, view);
 }
-
+// TODO: "connection" to class rather than individual method
 class EmployeeMenu extends Menu {
 
     @Override
@@ -34,19 +39,19 @@ class EmployeeMenu extends Menu {
     protected boolean handleChoice(Connection conn, int choice) {
         switch (choice) {
             case 1:
-                TableOperations.listTables(conn);
+                controller.listTables(conn);
                 break;
             case 2:
-                TableOperations.selectTable(conn);
+                controller.selectTable(conn);
                 break;
             case 3:
-                TableOperations.addData(conn);
+                controller.addData(conn);
                 break;
             case 4:
-                TableOperations.modifyData(conn);
+                controller.modifyData(conn);
                 break;
             case 5:
-                TableOperations.removeData(conn);
+                controller.removeData(conn);
                 break;
             case 6:
                 return false;
@@ -76,13 +81,13 @@ class UserMenu extends Menu {
     protected boolean handleChoice(Connection connection, int choice) {
         switch (choice) {
             case 1:
-                TableOperations.selectProducts(connection);
+                controller.selectProducts(connection);
                 break;
             case 2:
-                TableOperations.selectProductCategory(connection);
+                controller.selectProductCategory(connection);
                 break;
             case 3:
-                TableOperations.selectPersonalOrders(connection, this.email);
+                controller.selectPersonalOrders(connection, this.email);
                 break;
             case 4:
                 return false;
