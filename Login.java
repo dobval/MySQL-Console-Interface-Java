@@ -13,24 +13,16 @@ public class Login {
         System.out.println("Password: ");
         String password = scanner.nextLine();
 
-        if(email.equals("root") && password.equals("adminpassword")){
-            try {
-                DatabaseConnectionRoot DBConnRoot = new DatabaseConnectionRoot();
-                Connection conn = DBConnRoot.getConnection();
-                new EmployeeMenu().displayMenu(conn);
-            } catch (SQLException e) {
-                System.out.println(e.getMessage());
-            }
+        DatabaseConnectionRoot DBConnRoot = new DatabaseConnectionRoot();
+        if(email.equals(DBConnRoot.getUser()) && password.equals(DBConnRoot.getPassword())){
+            Connection conn = DBConnRoot.getConnection();
+            new EmployeeMenu().displayMenu(conn);
         }
 
         else if (checkCredentials(email, password)) {
-            try {
-                DatabaseConnectionUser DBConnUser = new DatabaseConnectionUser();
-                Connection conn = DBConnUser.getConnection();
-                new UserMenu(email).displayMenu(conn);
-            } catch (SQLException e) {
-                System.out.println(e.getMessage());
-            }
+            DatabaseConnectionUser DBConnUser = new DatabaseConnectionUser();
+            Connection conn = DBConnUser.getConnection();
+            new UserMenu(email).displayMenu(conn);
         } else {
             System.out.println("Invalid credentials. Try again.");
         }

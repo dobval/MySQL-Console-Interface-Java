@@ -1,51 +1,66 @@
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.Properties;
 
 public abstract class DatabaseConnection {
-    private static final String URL = "jdbc:mysql://localhost:3306/arctic_athletes_simple";
+    private static final String CONFIG_FILE = "dbconfig.properties";
+    private static final Properties properties = new Properties();
     private static Connection connection = null;
 
+    static {
+        try (InputStream input = new FileInputStream(CONFIG_FILE)) {
+            properties.load(input);
+        } catch (IOException e) {
+            System.out.println(e.getMessage());
+        }
+    }
+
     protected abstract String getUser();
+
     protected abstract String getPassword();
 
-    public Connection getConnection() throws SQLException {
-        if (connection == null || connection.isClosed()) {
-            connection = DriverManager.getConnection(URL, getUser(), getPassword());
+    public Connection getConnection() {
+        try {
+            if (connection == null || connection.isClosed()) {
+                String url = properties.getProperty("db.url");
+                connection = DriverManager.getConnection(url, getUser(), getPassword());
+            }
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
         }
         return connection;
+    }
+
+    protected String getProperty(String key) {
+        return properties.getProperty(key);
     }
 }
 
 class DatabaseConnectionRoot extends DatabaseConnection {
-    private static final String USER = "root";
-    private static final String PASSWORD = "adminpassword";
-
     @Override
     protected String getUser() {
-        return USER;
+        return getProperty("db.root.user");
     }
 
     @Override
     protected String getPassword() {
-        return PASSWORD;
+        return getProperty("db.root.password");
     }
-
 }
 
 class DatabaseConnectionUser extends DatabaseConnection {
-    private static final String USER = "guest";
-    private static final String PASSWORD = "password";
-
     @Override
     protected String getUser() {
-        return USER;
+        return getProperty("db.user.user");
     }
 
     @Override
     protected String getPassword() {
-        return PASSWORD;
+        return getProperty("db.user.password");
     }
-
 }
 
