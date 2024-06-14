@@ -2,7 +2,20 @@
 
 This Java application provides a command-line interface to interact with a MySQL database using the MVC pattern. You can execute SQL commands, manage data, and perform various database operations seamlessly.
 
-https://github.com/dobval/MySQL-Console-Interface-Java/assets/100198047/1f3b7312-c521-4642-910c-309c85cba7fe
+<details>
+  <summary>Customer Login Showcase</summary>
+	
+  https://github.com/dobval/MySQL-Console-Interface-Java/assets/100198047/5b3d9b02-3b60-4368-a516-d15039ee7d4e
+
+</details>
+<details>
+  <summary>Employee Login Showcase</summary>
+	
+  https://github.com/dobval/MySQL-Console-Interface-Java/assets/100198047/151f9b7b-b7b8-4aa1-b3c4-182ed79db5b0
+
+</details>
+
+
 
 ## Project Structure
 
@@ -17,6 +30,7 @@ https://github.com/dobval/MySQL-Console-Interface-Java/assets/100198047/1f3b7312
 - **ConsoleView**: (View) Handles the visualisation.
 - **TableOperationsController**: (Controller) Handles the interaction between the View and Model
 - **com.DatabaseModel.DatabaseOperations**: (Model) Handles the database operations.
+	- Database Structure classes inside com.DatabaseModel
 
 ## Getting Started
 
@@ -39,11 +53,13 @@ https://github.com/dobval/MySQL-Console-Interface-Java/assets/100198047/1f3b7312
     - Download [ArcticAthletes_Simple](arctic_athletes_simple.sql) MySQL Database and run the script
 
 3. **Configure database connection**:
-    - Update the `DatabaseConnection*` classes (root and guest) with your MySQL database URL, username, and password:
-      ```java
-      private static final String URL = "jdbc:mysql://localhost:3306/database_name";
-      private static final String USER = "username";
-      private static final String PASSWORD = "password";
+    - Update the [dbconfig.properties](dbconfig.properties) file:
+      ```
+      db.url=jdbc:mysql://localhost:3306/arctic_athletes_simple
+      db.root.user=root
+      db.root.password=adminpassword
+      db.user.user=guest
+      db.user.password=password
       ```
 
 4. **Compile the application**:
