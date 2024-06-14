@@ -4,26 +4,39 @@ import java.sql.Connection;
 import java.util.Scanner;
 
 public abstract class Menu {
-    public void displayMenu(Connection connection) {
+    protected Connection conn;
+    protected DatabaseOperations model;
+    protected ConsoleView view;
+    protected TableOperationsController controller;
+
+    public Menu(Connection conn) {
+        this.conn = conn;
+        this.model = new DatabaseOperations(conn);
+        this.view = new ConsoleView();
+        this.controller = new TableOperationsController(model, view);
+    }
+
+    public void displayMenu() {
         Scanner scanner = new Scanner(System.in);
         while (true) {
             displayOptions();
             System.out.print("Choose an option: ");
             int choice = scanner.nextInt();
-            if (!handleChoice(connection, choice)) {
+            if (!handleChoice(choice)) {
                 return;
             }
         }
     }
 
     protected abstract void displayOptions();
-    protected abstract boolean handleChoice(Connection connection, int choice);
-    ConsoleView view = new ConsoleView();
-    DatabaseOperations model = new DatabaseOperations();
-    TableOperationsController controller = new TableOperationsController(model, view);
+    protected abstract boolean handleChoice(int choice);
 }
-// TODO: "connection" to class rather than individual method
+
 class EmployeeMenu extends Menu {
+
+    public EmployeeMenu(Connection conn) {
+        super(conn);
+    }
 
     @Override
     protected void displayOptions() {
@@ -36,22 +49,22 @@ class EmployeeMenu extends Menu {
     }
 
     @Override
-    protected boolean handleChoice(Connection conn, int choice) {
+    protected boolean handleChoice(int choice) {
         switch (choice) {
             case 1:
-                controller.listTables(conn);
+                controller.listTables();
                 break;
             case 2:
-                controller.selectTable(conn);
+                controller.selectTable();
                 break;
             case 3:
-                controller.addData(conn);
+                controller.addData();
                 break;
             case 4:
-                controller.modifyData(conn);
+                controller.modifyData();
                 break;
             case 5:
-                controller.removeData(conn);
+                controller.removeData();
                 break;
             case 6:
                 return false;
@@ -65,7 +78,8 @@ class EmployeeMenu extends Menu {
 class UserMenu extends Menu {
     private final String email;
 
-    public UserMenu(String emailLogin) {
+    public UserMenu(Connection conn, String emailLogin) {
+        super(conn);
         this.email = emailLogin;
     }
 
@@ -78,16 +92,16 @@ class UserMenu extends Menu {
     }
 
     @Override
-    protected boolean handleChoice(Connection connection, int choice) {
+    protected boolean handleChoice(int choice) {
         switch (choice) {
             case 1:
-                controller.selectProducts(connection);
+                controller.selectProducts();
                 break;
             case 2:
-                controller.selectProductCategory(connection);
+                controller.selectProductCategory();
                 break;
             case 3:
-                controller.selectPersonalOrders(connection, this.email);
+                controller.selectPersonalOrders(this.email);
                 break;
             case 4:
                 return false;

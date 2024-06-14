@@ -1,6 +1,5 @@
 import com.DatabaseModel.*;
 
-import java.sql.Connection;
 import java.util.List;
 
 // Controller (MVC)
@@ -15,38 +14,38 @@ public class TableOperationsController {
         this.view = view;
     }
 
-    public void listTables(Connection conn) {
-        List<String> tables = model.listTables(conn);
+    public void listTables() {
+        List<String> tables = model.listTables();
         view.displayTables(tables);
     }
 
-    public void selectTable(Connection conn) {
+    public void selectTable() {
         String tableName = view.promptForTableName();
-        List<List<String>> content = model.selectTable(conn, tableName);
+        List<List<String>> content = model.selectTable(tableName);
         view.displayTableContent(content);
 
     }
 
-    public void selectProductCategory(Connection conn) {
-        List<String> categories = model.getDistinctCategories(conn);
+    public void selectProductCategory() {
+        List<String> categories = model.getDistinctCategories();
         view.displayCategories(categories);
         String category = view.promptForCategory();
-        List<Product> products = model.selectProductsByCategory(conn, category);
+        List<Product> products = model.selectProductsByCategory(category);
         view.displayProducts(products);
     }
 
-    public void selectProducts(Connection conn) {
-        List<Product> products = model.selectProducts(conn);
+    public void selectProducts() {
+        List<Product> products = model.selectProducts();
         view.displayProducts(products);
     }
 
-    public void selectPersonalOrders(Connection conn, String email) {
-        int customerId = model.getCustomerIdByEmail(conn, email);
+    public void selectPersonalOrders(String email) {
+        int customerId = model.getCustomerIdByEmail(email);
         if (customerId == -1) {
             System.out.println("No customer found with the provided email.");
             return;
         }
-        List<Order> orders = model.getCustomerOrders(conn, customerId);
+        List<Order> orders = model.getCustomerOrders(customerId);
         if (orders.isEmpty()) {
             System.out.println("No orders found for the provided customer.");
             return;
@@ -54,41 +53,41 @@ public class TableOperationsController {
         view.displayOrders(orders);
         for (Order order : orders) {
             int orderId = order.getId();
-            List<OrderItem> items = model.getOrderItems(conn, orderId);
+            List<OrderItem> items = model.getOrderItems(orderId);
             view.displayOrderItems(items);
         }
     }
 
  //TODO: handle AUTO-INCREMENT IDs for adding data
-    public void addData(Connection conn) {
-        listTables(conn);
+    public void addData() {
+        listTables();
         String tableName = view.promptForTableName();
-        List<String> columns = model.getColumns(conn, tableName, "arctic_athletes_simple");
+        List<String> columns = model.getColumns(tableName, "arctic_athletes_simple");
         List<Object> values = view.promptForColumnValues(columns);
-        model.insertData(conn, tableName, columns, values);
+        model.insertData(tableName, columns, values);
         System.out.println("Data inserted successfully.");
     }
 
-    public void removeData(Connection conn) {
-        listTables(conn);
+    public void removeData() {
+        listTables();
         String tableName = view.promptForTableName();
         String rowId = view.promptForRowId();
-        List<String> rows = model.selectRowById(conn, tableName, rowId);
+        List<String> rows = model.selectRowById(tableName, rowId);
         view.displayRow(rows);
         String confirm = view.promptForConfirmation();
         if (confirm.equals("y")) {
-            model.deleteData(conn, tableName, rowId);
+            model.deleteData(tableName, rowId);
             System.out.println("Row with ID " + rowId + " has been deleted from table " + tableName);
         }
     }
     // TODO: "Enter" to keep value
-    public void modifyData(Connection conn) {
-        listTables(conn);
+    public void modifyData() {
+        listTables();
         String tableName = view.promptForTableName();
         String rowId = view.promptForRowIdModify();
-        List<String> columns = model.getColumns(conn, tableName, "arctic_athletes_simple");
+        List<String> columns = model.getColumns(tableName, "arctic_athletes_simple");
         List<Object> values = view.promptForNewColumnValues(columns);
-        model.updateData(conn, tableName, rowId, columns, values);
+        model.updateData(tableName, rowId, columns, values);
         System.out.println("Data updated successfully.");
     }
 }

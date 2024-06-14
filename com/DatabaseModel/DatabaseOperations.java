@@ -6,8 +6,13 @@ import java.util.List;
 
 // Model (MVC)
 public class DatabaseOperations {
+    protected Connection conn;
 
-    public List<String> listTables(Connection conn) {
+    public DatabaseOperations(Connection conn) {
+        this.conn = conn;
+    }
+
+    public List<String> listTables() {
         List<String> tables = new ArrayList<>();
         String query = "SHOW TABLES";
         try (Statement stmt = conn.createStatement();
@@ -22,7 +27,7 @@ public class DatabaseOperations {
         return tables;
     }
 
-    public List<List<String>> selectTable(Connection conn, String tableName) {
+    public List<List<String>> selectTable(String tableName) {
         List<List<String>> content = new ArrayList<>();
         String query = "SELECT * FROM " + tableName;
 
@@ -46,7 +51,7 @@ public class DatabaseOperations {
         return content;
     }
 
-    public List<String> selectRowById(Connection conn, String tableName, String rowId) {
+    public List<String> selectRowById(String tableName, String rowId) {
         List<String> row = new ArrayList<>();
         String query = "SELECT * FROM " + tableName + " WHERE id = ?";
         try (PreparedStatement pstmt = conn.prepareStatement(query)) {
@@ -66,7 +71,7 @@ public class DatabaseOperations {
         return row;
     }
 
-    public List<String> getDistinctCategories(Connection conn) {
+    public List<String> getDistinctCategories() {
         List<String> categories = new ArrayList<>();
         String query = "SELECT DISTINCT category FROM products";
         try (PreparedStatement pstmt = conn.prepareStatement(query);
@@ -82,7 +87,7 @@ public class DatabaseOperations {
     }
 
     /*
-    public List<Customer> selectCustomers(Connection conn) {
+    public List<Customer> selectCustomers() {
         List<Customer> customers = new ArrayList<>();
         String query = "SELECT * FROM customers";
         try (Statement stmt = conn.createStatement();
@@ -104,7 +109,7 @@ public class DatabaseOperations {
     }
     */
 
-    public List<Product> selectProducts(Connection conn){
+    public List<Product> selectProducts(){
         List<Product> products = new ArrayList<>();
         String query = "SELECT * FROM products";
         try (Statement stmt = conn.createStatement();
@@ -125,7 +130,7 @@ public class DatabaseOperations {
         return products;
     }
 
-    public List<Product> selectProductsByCategory(Connection conn, String category) {
+    public List<Product> selectProductsByCategory(String category) {
         List<Product> products = new ArrayList<>();
         String query = "SELECT * FROM products WHERE category = ?";
         try (PreparedStatement pstmt = conn.prepareStatement(query)) {
@@ -148,7 +153,7 @@ public class DatabaseOperations {
         return products;
     }
 
-    public int getCustomerIdByEmail(Connection conn, String email) {
+    public int getCustomerIdByEmail(String email) {
         String query = "SELECT id FROM customers WHERE email = ?";
         try (PreparedStatement pstmt = conn.prepareStatement(query)) {
             pstmt.setString(1, email);
@@ -164,7 +169,7 @@ public class DatabaseOperations {
         return -1; // No customer found
     }
 
-    public List<Order> getCustomerOrders(Connection conn, int customerId) {
+    public List<Order> getCustomerOrders(int customerId) {
         List<Order> orders = new ArrayList<>();
         String query = "SELECT * FROM orders WHERE customer_id = ?";
         try (PreparedStatement pstmt = conn.prepareStatement(query)) {
@@ -187,7 +192,7 @@ public class DatabaseOperations {
         return orders;
     }
 
-    public List<OrderItem> getOrderItems(Connection conn, int orderId) {
+    public List<OrderItem> getOrderItems(int orderId) {
         List<OrderItem> orderItems = new ArrayList<>();
         String query = "SELECT oi.product_id, p.name, p.price, oi.quantity " +
                 "FROM order_items oi " +
@@ -213,7 +218,7 @@ public class DatabaseOperations {
         return orderItems;
     }
 
-    public void insertData(Connection conn, String tableName, List<String> columns, List<Object> values) {
+    public void insertData(String tableName, List<String> columns, List<Object> values) {
         StringBuilder query = new StringBuilder("INSERT INTO ");
         query.append(tableName).append(" (");
         for (int i = 0; i < columns.size(); i++) {
@@ -242,7 +247,7 @@ public class DatabaseOperations {
         }
     }
 
-    public void deleteData(Connection conn, String tableName, String rowId) {
+    public void deleteData(String tableName, String rowId) {
         String query = "DELETE FROM " + tableName + " WHERE id = ?";
         try (PreparedStatement pstmt = conn.prepareStatement(query)) {
             pstmt.setString(1, rowId);
@@ -253,7 +258,7 @@ public class DatabaseOperations {
         }
     }
 
-    public void updateData(Connection conn, String tableName, String rowId, List<String> columns, List<Object> values) {
+    public void updateData(String tableName, String rowId, List<String> columns, List<Object> values) {
         StringBuilder query = new StringBuilder("UPDATE ");
         query.append(tableName).append(" SET ");
         for (int i = 0; i < columns.size(); i++) {
@@ -276,7 +281,7 @@ public class DatabaseOperations {
         }
     }
 
-    public List<String> getColumns(Connection conn, String tableName, String schemaName) {
+    public List<String> getColumns(String tableName, String schemaName) {
         List<String> columnNames = new ArrayList<>();
         String qualifiedName = (schemaName != null && !schemaName.isEmpty()) ? (schemaName + "." + tableName) : tableName;
 

@@ -16,13 +16,13 @@ public class Login {
         DatabaseConnectionRoot DBConnRoot = new DatabaseConnectionRoot();
         if(email.equals(DBConnRoot.getUser()) && password.equals(DBConnRoot.getPassword())){
             Connection conn = DBConnRoot.getConnection();
-            new EmployeeMenu().displayMenu(conn);
+            new EmployeeMenu(conn).displayMenu();
         }
 
         else if (checkCredentials(email, password)) {
             DatabaseConnectionUser DBConnUser = new DatabaseConnectionUser();
             Connection conn = DBConnUser.getConnection();
-            new UserMenu(email).displayMenu(conn);
+            new UserMenu(conn, email).displayMenu();
         } else {
             System.out.println("Invalid credentials. Try again.");
         }
