@@ -66,10 +66,16 @@ This Java application provides a command-line interface to interact with a MySQL
    ```bash
    javac -cp .:mysql-connector-java-8.0.23.jar DatabaseApp.java
    ```
+   OR download the [Release](https://github.com/dobval/MySQL-Console-Interface-Java/releases) .jar file
+   
 
-5. **Run the application**:
+6. **Run the application**:
    ```bash
    java -cp .:mysql-connector-java-8.0.23.jar DatabaseApp
+   ```
+   OR if you downloaded the .jar file (make sure the properties file is in the same folder)
+   ```bash
+   java -jar MySQL-Console-Interface-Java.jar
    ```
 
 ## Usage
