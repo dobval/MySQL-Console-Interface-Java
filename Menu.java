@@ -22,9 +22,8 @@ public abstract class Menu {
             displayOptions();
             System.out.print("Choose an option: ");
             int choice = scanner.nextInt();
-            if (!handleChoice(choice)) {
-                return;
-            }
+            scanner.nextLine();
+            if (!handleChoice(choice)) break;
         }
     }
 

@@ -28,7 +28,7 @@ public class Login {
         }
     }
 
-    public boolean checkCredentials(String email, String password){
+    private boolean checkCredentials(String email, String password){
 
         String query = "SELECT password FROM customers WHERE email = ?";
 

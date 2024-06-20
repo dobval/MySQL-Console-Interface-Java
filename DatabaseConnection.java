@@ -9,7 +9,7 @@ import java.util.Properties;
 public abstract class DatabaseConnection {
     private static final String CONFIG_FILE = "dbconfig.properties";
     private static final Properties properties = new Properties();
-    private static Connection connection = null;
+    private Connection connection = null; // NOT static!
     private static final int MAX_RETRIES = 3;
     private static final int RETRY_DELAY_MS = 2000;
 
