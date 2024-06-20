@@ -139,14 +139,19 @@ public class ConsoleView {
         return scanner.nextLine();
     }
 
-    public List<Object> promptForNewColumnValues(List<String> columns) {
+    public List<Object> promptForNewColumnValuesWithDefaults(List<String> columns, List<String> currentRow) {
         List<Object> values = new ArrayList<>();
+        int index = 0; // For current values
         for (String column : columns) {
-            System.out.print("Enter new value for " + column + " (or press Enter to keep the current value): ");
+            System.out.print("Enter new value for " + column + " (Enter to keep value): ");
             String value = scanner.nextLine();
-            if (!value.isEmpty()) {
+            if (value.isEmpty()) {
+                values.add(currentRow.get(index));
+            }
+            else {
                 values.add(value);
             }
+            index++;
         }
         return values;
     }

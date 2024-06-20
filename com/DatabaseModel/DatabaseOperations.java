@@ -54,9 +54,9 @@ public class DatabaseOperations {
     public List<String> selectRowById(String tableName, String rowId) {
         List<String> row = new ArrayList<>();
         String query = "SELECT * FROM " + tableName + " WHERE id = ?";
-        try (PreparedStatement pstmt = conn.prepareStatement(query)) {
-            pstmt.setString(1, rowId);
-            try (ResultSet rs = pstmt.executeQuery()) {
+        try (PreparedStatement ps = conn.prepareStatement(query)) {
+            ps.setString(1, rowId);
+            try (ResultSet rs = ps.executeQuery()) {
                 int columnCount = rs.getMetaData().getColumnCount();
                 if (rs.next()) {
                     for (int i = 1; i <= columnCount; i++) {
@@ -74,8 +74,8 @@ public class DatabaseOperations {
     public List<String> getDistinctCategories() {
         List<String> categories = new ArrayList<>();
         String query = "SELECT DISTINCT category FROM products";
-        try (PreparedStatement pstmt = conn.prepareStatement(query);
-             ResultSet rs = pstmt.executeQuery()) {
+        try (PreparedStatement ps = conn.prepareStatement(query);
+             ResultSet rs = ps.executeQuery()) {
             while (rs.next()) {
                 categories.add(rs.getString("category"));
             }
@@ -133,9 +133,9 @@ public class DatabaseOperations {
     public List<Product> selectProductsByCategory(String category) {
         List<Product> products = new ArrayList<>();
         String query = "SELECT * FROM products WHERE category = ?";
-        try (PreparedStatement pstmt = conn.prepareStatement(query)) {
-            pstmt.setString(1, category);
-            try (ResultSet rs = pstmt.executeQuery()) {
+        try (PreparedStatement ps = conn.prepareStatement(query)) {
+            ps.setString(1, category);
+            try (ResultSet rs = ps.executeQuery()) {
                 while (rs.next()) {
                     Product product = new Product();
                     product.setId(rs.getInt("id"));
@@ -155,9 +155,9 @@ public class DatabaseOperations {
 
     public int getCustomerIdByEmail(String email) {
         String query = "SELECT id FROM customers WHERE email = ?";
-        try (PreparedStatement pstmt = conn.prepareStatement(query)) {
-            pstmt.setString(1, email);
-            try (ResultSet rs = pstmt.executeQuery()) {
+        try (PreparedStatement ps = conn.prepareStatement(query)) {
+            ps.setString(1, email);
+            try (ResultSet rs = ps.executeQuery()) {
                 if (rs.next()) {
                     return rs.getInt("id");
                     }
@@ -172,9 +172,9 @@ public class DatabaseOperations {
     public List<Order> getCustomerOrders(int customerId) {
         List<Order> orders = new ArrayList<>();
         String query = "SELECT * FROM orders WHERE customer_id = ?";
-        try (PreparedStatement pstmt = conn.prepareStatement(query)) {
-            pstmt.setInt(1, customerId);
-            try (ResultSet rs = pstmt.executeQuery()) {
+        try (PreparedStatement ps = conn.prepareStatement(query)) {
+            ps.setInt(1, customerId);
+            try (ResultSet rs = ps.executeQuery()) {
                 while (rs.next()) {
                     Order order = new Order();
                     order.setId(rs.getInt("id"));
@@ -221,37 +221,62 @@ public class DatabaseOperations {
     public void insertData(String tableName, List<String> columns, List<Object> values) {
         StringBuilder query = new StringBuilder("INSERT INTO ");
         query.append(tableName).append(" (");
-        for (int i = 0; i < columns.size(); i++) {
-            query.append(columns.get(i));
-            if (i < columns.size() - 1) {
-                query.append(", ");
+        int columnCount = 0;
+        for (String column : columns) {
+            if (isNotAutoIncrement(tableName, column)) {
+                if (columnCount > 0) {
+                    query.append(", ");
+                }
+                query.append(column);
+                columnCount++;
             }
         }
         query.append(") VALUES (");
-        for (int i = 0; i < values.size(); i++) {
-            query.append("?");
-            if (i < values.size() - 1) {
+
+        for (int i = 0; i < columnCount; i++) {
+            if (i > 0) {
                 query.append(", ");
             }
+            query.append("?");
         }
         query.append(")");
 
-        try (PreparedStatement pstmt = conn.prepareStatement(query.toString())) {
-            for (int i = 0; i < values.size(); i++) {
-                pstmt.setObject(i + 1, values.get(i));
+        try (PreparedStatement ps = conn.prepareStatement(query.toString())) {
+            int valueIndex = 1;
+            for (int i = 0; i < columns.size(); i++) {
+                if (isNotAutoIncrement(tableName, columns.get(i))) {
+                    ps.setObject(valueIndex, values.get(i));
+                    valueIndex++;
+                }
             }
-            pstmt.executeUpdate();
-        }
-        catch (SQLException e) {
+            ps.executeUpdate();
+            System.out.println("Data inserted successfully.");
+        } catch (SQLException e) {
             System.out.println(e.getMessage());
         }
+        //System.out.println(query); //debug
     }
 
+    public boolean isNotAutoIncrement(String tableName, String columnName) {
+        String query = "SELECT EXTRA FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_SCHEMA = 'arctic_athletes_simple' AND TABLE_NAME = ? AND COLUMN_NAME = ?";
+        try (PreparedStatement ps = conn.prepareStatement(query)) {
+            ps.setString(1, tableName);
+            ps.setString(2, columnName);
+            ResultSet rs = ps.executeQuery();
+            if (rs.next()) {
+                return !rs.getString("EXTRA").contains("auto_increment");
+            }
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+        }
+        return true;
+    }
+    
     public void deleteData(String tableName, String rowId) {
         String query = "DELETE FROM " + tableName + " WHERE id = ?";
-        try (PreparedStatement pstmt = conn.prepareStatement(query)) {
-            pstmt.setString(1, rowId);
-            pstmt.executeUpdate();
+        try (PreparedStatement ps = conn.prepareStatement(query)) {
+            ps.setString(1, rowId);
+            ps.executeUpdate();
         }
         catch (SQLException e) {
             System.out.println(e.getMessage());
@@ -269,12 +294,13 @@ public class DatabaseOperations {
         }
         query.append(" WHERE id = ?");
 
-        try (PreparedStatement pstmt = conn.prepareStatement(query.toString())) {
+        try (PreparedStatement ps = conn.prepareStatement(query.toString())) {
             for (int i = 0; i < values.size(); i++) {
-                pstmt.setObject(i + 1, values.get(i));
+                ps.setObject(i + 1, values.get(i));
             }
-            pstmt.setString(values.size() + 1, rowId);
-            pstmt.executeUpdate();
+            ps.setString(values.size() + 1, rowId);
+            ps.executeUpdate();
+            System.out.println("Data updated successfully.");
         }
         catch (SQLException e) {
             System.out.println(e.getMessage());

@@ -58,14 +58,12 @@ public class TableOperationsController {
         }
     }
 
- //TODO: handle AUTO-INCREMENT IDs for adding data
     public void addData() {
         listTables();
         String tableName = view.promptForTableName();
         List<String> columns = model.getColumns(tableName, "arctic_athletes_simple");
         List<Object> values = view.promptForColumnValues(columns);
         model.insertData(tableName, columns, values);
-        System.out.println("Data inserted successfully.");
     }
 
     public void removeData() {
@@ -80,14 +78,18 @@ public class TableOperationsController {
             System.out.println("Row with ID " + rowId + " has been deleted from table " + tableName);
         }
     }
-    // TODO: "Enter" to keep value
+
     public void modifyData() {
         listTables();
         String tableName = view.promptForTableName();
         String rowId = view.promptForRowIdModify();
+
+        // Get current row data
+        List<String> currentRow = model.selectRowById(tableName, rowId);
+        view.displayRow(currentRow);
+
         List<String> columns = model.getColumns(tableName, "arctic_athletes_simple");
-        List<Object> values = view.promptForNewColumnValues(columns);
+        List<Object> values = view.promptForNewColumnValuesWithDefaults(columns, currentRow);
         model.updateData(tableName, rowId, columns, values);
-        System.out.println("Data updated successfully.");
     }
 }
